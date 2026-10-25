@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111315">
+  <title>BILLY PEPS MOTORS | Car Dealership Demo</title>
+  <meta name="description" content="Browse the BILLY PEPS MOTORS vehicle showcase and enquire on WhatsApp.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111315;
+      --panel: #1b1f22;
+      --panel-2: #24292d;
+      --text: #f4f6f7;
+      --muted: #aab2b8;
+      --accent: #f4b400;
+      --green: #25d366;
+      --border: #343b40;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    a { color: inherit; }
+    button, select { font: inherit; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(17, 19, 21, .96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+    .header-inner {
+      width: min(1120px, 100%);
+      margin: auto;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand { min-width: 0; }
+    .brand-name {
+      margin: 0;
+      font-size: clamp(1rem, 4vw, 1.25rem);
+      line-height: 1.15;
+      font-weight: 900;
+      letter-spacing: .035em;
+    }
+    .brand-subtitle { margin: 4px 0 0; color: var(--muted); font-size: .76rem; }
+    .header-actions { display: flex; gap: 7px; flex-shrink: 0; }
+    .header-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 39px;
+      padding: 8px 11px;
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .call-btn { background: var(--panel-2); border: 1px solid #454d53; }
+    .wa-btn { background: var(--green); color: #062b14; }
+
+    main { width: min(1120px, 100%); margin: auto; padding: 22px 16px 42px; }
+    .hero {
+      padding: 26px 20px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: radial-gradient(circle at 90% 10%, #353025 0, transparent 35%), var(--panel);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      display: inline-block;
+      color: var(--accent);
+      font-size: .75rem;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      max-width: 700px;
+      margin: 10px 0;
+      font-size: clamp(1.9rem, 8vw, 3.5rem);
+      line-height: 1.04;
+      letter-spacing: -.045em;
+    }
+    .hero p { max-width: 580px; margin: 0; color: var(--muted); }
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 17px;
+    }
+    .filter-label { font-size: .9rem; font-weight: 800; }
+    .filter-select {
+      min-height: 44px;
+      width: 100%;
+      max-width: 320px;
+      padding: 9px 12px;
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .results-count { margin-left: auto; color: var(--muted); font-size: .85rem; }
+    .car-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .car-card {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+    }
+    .car-image-wrap {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      background: #555b60;
+    }
+    .car-image-wrap::before {
+      content: "Image unavailable";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #e1e5e8;
+      font-size: .9rem;
+      background: #555b60;
+    }
+    .car-image {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .25s ease;
+    }
+    .car-card:hover .car-image { transform: scale(1.025); }
+    .car-image.is-missing { display: none; }
+    .sample-tag {
+      position: absolute;
+      z-index: 2;
+      top: 10px;
+      left: 10px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      color: #171717;
+      background: var(--accent);
+      font-size: .68rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .car-info { padding: 15px; display: flex; flex: 1; flex-direction: column; }
+    .car-title { margin: 0; font-size: 1.15rem; font-weight: 850; }
+    .car-year { margin: 3px 0 10px; color: var(--muted); font-size: .86rem; }
+    .car-price { margin: 0 0 12px; color: var(--accent); font-size: 1.35rem; font-weight: 950; line-height: 1.2; }
+    .car-specs { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+    .spec {
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: #d6dce0;
+      font-size: .77rem;
+    }
+    .car-wa {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 46px;
+      margin-top: auto;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--green);
+      color: #062b14;
+      text-decoration: none;
+      font-weight: 900;
+      text-align: center;
+    }
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 30px 18px;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      color: var(--muted);
+      text-align: center;
+    }
+    .contact-strip {
+      margin-top: 28px;
+      padding: 20px;
+      border-radius: 16px;
+      background: var(--panel-2);
+      text-align: center;
+    }
+    .contact-strip h2 { margin: 0 0 7px; font-size: 1.3rem; }
+    .contact-strip p { margin: 0 0 14px; color: var(--muted); }
+    .contact-strip .header-btn { min-height: 45px; }
+    footer {
+      padding: 20px 16px 28px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      text-align: center;
+      font-size: .84rem;
+    }
+    footer strong { color: var(--text); }
+
+    @media (min-width: 560px) {
+      .car-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero { padding: 34px 28px; }
+      .header-inner { padding-inline: 22px; }
+    }
+    @media (min-width: 900px) {
+      .car-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+      main { padding-top: 30px; }
+      .hero { padding: 44px 38px; }
+      .header-inner { padding-inline: 28px; }
+    }
+    @media (max-width: 380px) {
+      .header-inner { padding-inline: 10px; }
+      .header-actions { gap: 5px; }
+      .header-btn { padding-inline: 8px; font-size: .75rem; }
+      .brand-subtitle { font-size: .68rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <p class="brand-name">BILLY PEPS MOTORS</p>
+        <p class="brand-subtitle">Find your next ride</p>
+      </div>
+      <nav class="header-actions" aria-label="Contact dealership">
+        <a class="header-btn call-btn" href="tel:+254725152722" aria-label="Call Billy Peps Motors">Call</a>
+        <a class="header-btn wa-btn" href="https://wa.me/254725152722?text=Hello%20Billy%20Peps%20Motors%2C%20I%27m%20interested%20in%20your%20cars." target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <span class="eyebrow">Drive something great</span>
+      <h1 id="hero-title">Your next car starts here.</h1>
+      <p>Explore our vehicle showcase and message us on WhatsApp for availability, viewing and pricing details.</p>
+    </section>
+
+    <section aria-labelledby="inventory-title">
+      <div class="filter-bar">
+        <label class="filter-label" for="budget-filter">Filter by budget</label>
+        <select id="budget-filter" class="filter-select">
+          <option value="all">All budgets</option>
+          <option value="under500">Under KSh 500,000</option>
+          <option value="500to1m">KSh 500,000 – 1,000,000</option>
+          <option value="over1m">KSh 1,000,000+</option>
+        </select>
+        <span id="results-count" class="results-count" aria-live="polite"></span>
+      </div>
+      <h2 id="inventory-title" style="margin:0 0 14px;font-size:1.35rem;">Featured vehicles</h2>
+      <div id="car-grid" class="car-grid"></div>
+    </section>
+
+    <section class="contact-strip" aria-labelledby="contact-title">
+      <h2 id="contact-title">Need more details?</h2>
+      <p>Ask about availability, viewing times or a vehicle that fits your budget.</p>
+      <a class="header-btn wa-btn" href="https://wa.me/254725152722?text=Hello%20Billy%20Peps%20Motors%2C%20I%27d%20like%20to%20ask%20about%20your%20inventory." target="_blank" rel="noopener noreferrer">Chat with Billy Peps Motors</a>
+    </section>
+  </main>
+
+  <footer>Demo by <strong>Justin Web Studio</strong></footer>
+
+  <script>
+    /*
+      EDIT VEHICLES HERE:
+      - Replace sample details with verified information from the dealership.
+      - priceKsh is a number used by the budget filter. Use null when the price is on request.
+      - "sample" fields are placeholders and must be verified before the site is used publicly.
+      - Keep car1.jpg ... car6.jpg in the same folder as this index.html file.
+    */
+    const cars = [
+      {
+        name: "Peugeot 208",
+        year: 2021,
+        priceKsh: null,
+        priceLabel: "Price on request",
+        engine: "1,200 cc",
+        mileage: "Sample mileage — confirm",
+        image: "car1.jpg",
+        detailsLabel: "Sample details"
+      },
+      {
+        name: "Sample Vehicle 2",
+        year: "Sample year",
+        priceKsh: 450000,
+        priceLabel: "KSh 450,000",
+        engine: "Sample engine",
+        mileage: "Sample mileage",
+        image: "car2.jpg",
+        detailsLabel: "Sample — replace details"
+      },
+      {
+        name: "Sample Vehicle 3",
+        year: "Sample year",
+        priceKsh: 750000,
+        priceLabel: "KSh 750,000",
+        engine: "Sample engine",
+        mileage: "Sample mileage",
+        image: "car3.jpg",
+        detailsLabel: "Sample — replace details"
+      },
+      {
+        name: "Sample Vehicle 4",
+        year: "Sample year",
+        priceKsh: 1250000,
+        priceLabel: "KSh 1,250,000",
+        engine: "Sample engine",
+        mileage: "Sample mileage",
+        image: "car4.jpg",
+        detailsLabel: "Sample — replace details"
+      },
+      {
+        name: "Sample Vehicle 5",
+        year: "Sample year",
+        priceKsh: 950000,
+        priceLabel: "KSh 950,000",
+        engine: "Sample engine",
+        mileage: "Sample mileage",
+        image: "car5.jpg",
+        detailsLabel: "Sample — replace details"
+      },
+      {
+        name: "Sample Vehicle 6",
+        year: "Sample year",
+        priceKsh: 1800000,
+        priceLabel: "KSh 1,800,000",
+        engine: "Sample engine",
+        mileage: "Sample mileage",
+        image: "car6.jpg",
+        detailsLabel: "Sample — replace details"
+      }
+    ];
+
+    const WHATSAPP_NUMBER = "254725152722";
+    const carGrid = document.getElementById("car-grid");
+    const budgetFilter = document.getElementById("budget-filter");
+    const resultsCount = document.getElementById("results-count");
+
+    function matchesBudget(car, budget) {
+      // Price-on-request vehicles remain visible in every budget view.
+      if (car.priceKsh === null || car.priceKsh === undefined) return true;
+      if (budget === "under500") return car.priceKsh < 500000;
+      if (budget === "500to1m") return car.priceKsh >= 500000 && car.priceKsh <= 1000000;
+      if (budget === "over1m") return car.priceKsh > 1000000;
+      return true;
+    }
+
+    function whatsappLink(carName) {
+      const message = `Hello Billy Peps Motors, I'm interested in the ${carName}. Please share its availability and more details.`;
+      return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    }
+
+    function makeCarCard(car) {
+      const article = document.createElement("article");
+      article.className = "car-card";
+
+      const imageWrap = document.createElement("div");
+      imageWrap.className = "car-image-wrap";
+
+      const image = document.createElement("img");
+      image.className = "car-image";
+      image.src = car.image;
+      image.alt = `${car.name} vehicle photo`;
+      image.loading = "lazy";
+      image.decoding = "async";
+      image.addEventListener("error", () => image.classList.add("is-missing"), { once: true });
+      imageWrap.appendChild(image);
+
+      const sampleTag = document.createElement("span");
+      sampleTag.className = "sample-tag";
+      sampleTag.textContent = car.detailsLabel || "Sample";
+      imageWrap.appendChild(sampleTag);
+
+      const info = document.createElement("div");
+      info.className = "car-info";
+
+      const title = document.createElement("h3");
+      title.className = "car-title";
+      title.textContent = car.name;
+
+      const year = document.createElement("p");
+      year.className = "car-year";
+      year.textContent = `Year: ${car.year}`;
+
+      const price = document.createElement("p");
+      price.className = "car-price";
+      price.textContent = car.priceLabel || "Price on request";
+
+      const specs = document.createElement("div");
+      specs.className = "car-specs";
+      [car.engine, car.mileage].filter(Boolean).forEach((value) => {
+        const spec = document.createElement("span");
+        spec.className = "spec";
+        spec.textContent = value;
+        specs.appendChild(spec);
+      });
+
+      const chat = document.createElement("a");
+      chat.className = "car-wa";
+      chat.href = whatsappLink(car.name);
+      chat.target = "_blank";
+      chat.rel = "noopener noreferrer";
+      chat.textContent = "Chat on WhatsApp";
+
+      info.append(title, year, price, specs, chat);
+      article.append(imageWrap, info);
+      return article;
+    }
+
+    function renderCars() {
+      const selectedBudget = budgetFilter.value;
+      const visibleCars = cars.filter((car) => matchesBudget(car, selectedBudget));
+      carGrid.replaceChildren();
+
+      if (visibleCars.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "empty-state";
+        empty.textContent = "No vehicles match this budget yet. Try another budget range or contact us.";
+        carGrid.appendChild(empty);
+      } else {
+        visibleCars.forEach((car) => carGrid.appendChild(makeCarCard(car)));
+      }
+
+      resultsCount.textContent = `${visibleCars.length} vehicle${visibleCars.length === 1 ? "" : "s"}`;
+    }
+
+    budgetFilter.addEventListener("change", renderCars);
+    renderCars();
+  </script>
+</body>
+</html>
